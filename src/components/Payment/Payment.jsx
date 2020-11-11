@@ -4,6 +4,7 @@ import { useStateValue } from "../StateProvider";
 import CheckoutProduct from "../Checkout/ChechoutProduct/CheckoutProduct";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "../reducer";
+import { db } from "../../firebase";
 import axios from "../axios";
 import "./Payment.css";
 import {
@@ -35,7 +36,6 @@ const Payment = () => {
 
     getClientSecret();
   }, [basket]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setProcessing(true);
@@ -47,9 +47,23 @@ const Payment = () => {
       })
       .then(({ paymentIntent }) => {
         //PaymentIntent = payment confirmation
+        db.collection("users")
+          .doc(user?.uid)
+          .collection("orders")
+          .doc(paymentIntent.id)
+          .set({
+            basket: basket,
+            amount: paymentIntent.amount,
+            created: paymentIntent.created,
+          });
+
         setSucceeded(true);
         setError(null);
         setProcessing(false);
+
+        dispatch({
+          type: "EMPTY_BASKET",
+        });
 
         history.replace("/orders");
       });

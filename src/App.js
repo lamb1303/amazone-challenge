@@ -5,6 +5,7 @@ import Checkout from './components/Checkout/Checkout.jsx';
 import Payment from './components/Payment/Payment.jsx'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Login from './components/Login/Login.jsx';
+import Orders from './components/Orders/Orders'
 import { useEffect } from 'react';
 import { auth } from './firebase';
 import { useStateValue } from './components/StateProvider';
@@ -36,6 +37,10 @@ function App() {
     <Router>
       <div className="app">
         <Switch>
+          <Route path="/orders">
+            <Header />
+            <Orders />
+          </Route>
           <Route path="/login">
             <Login />
           </Route>
